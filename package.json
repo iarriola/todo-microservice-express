@@ -4,7 +4,7 @@
   "description": "Todo list microservice",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsc-watch --onSuccess \"node ./dist/server.js\""
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/incodemx/todo-microservice/issues"
   },
-  "homepage": "https://github.com/incodemx/todo-microservice#readme"
+  "homepage": "https://github.com/incodemx/todo-microservice#readme",
+  "dependencies": {
+    "tsc-watch": "^4.2.9",
+    "typescript": "^3.9.5"
+  }
 }
