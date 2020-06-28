@@ -16,4 +16,4 @@ insert into task (
 )
 values
     (1,'846cba17-06da-4c63-9d61-23f729f75f13','Shopping list','<ul><li>Meat</li><li>Milk</li></ul>'),
-    (2,'7cb19f48-aa32-4058-b0dd-3a0c69b2d781', 'TODO\'s', '<ul><li>Celan room</li></ul>');
+    (2,'7cb19f48-aa32-4058-b0dd-3a0c69b2d781', 'TODO', '<ul><li>Celan room</li></ul>');
