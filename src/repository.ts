@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 import { Client, QueryResult, QueryResultRow } from 'pg';
 import { logger } from './logger';
-import * as model from './model';
+import {Initializer, ReadRepository, WriteRepository, Task} from './model';
 
-export class Repository implements model.Initializer, model.ReadRepository<model.Task>, model.WriteRepository<model.Task> {
+export class Repository implements Initializer, ReadRepository<Task>, WriteRepository<Task> {
 
   private connection: Connection;
 
@@ -14,19 +14,19 @@ export class Repository implements model.Initializer, model.ReadRepository<model
     this.dbClient = this.connection.getClient();
   }
 
-  findOne(id: string): Promise<model.Task> {
+  findOne(id: string): Promise<Task> {
     throw new Error("Method not implemented.");
   }
-  findAll(): Promise<model.Task[]> {
+  findAll(): Promise<Task[]> {
     throw new Error("Method not implemented.");
   }
-  search(item: model.Task): Promise<model.Task[]> {
+  search(item: Task): Promise<Task[]> {
     throw new Error("Method not implemented.");
   }
-  create(item: model.Task): Promise<boolean> {
+  create(item: Task): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
-  update(id: string, item: model.Task): Promise<boolean> {
+  update(id: string, item: Task): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
   delete(id: string): Promise<boolean> {
@@ -39,7 +39,7 @@ export class Repository implements model.Initializer, model.ReadRepository<model
 
 }
 
-class Connection implements model.Initializer {
+class Connection implements Initializer {
   private dbClient: Client;
 
   constructor() {
