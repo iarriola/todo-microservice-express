@@ -1,95 +1,56 @@
-import dotenv from 'dotenv';
+
 import { Client, QueryResult, QueryResultRow } from 'pg';
 import { logger } from './logger';
-import {Initializer, ReadRepository, WriteRepository, Task} from './model';
+import Database from './util/database';
+import {Initializer, ReadRepository, WriteRepository, Task, TaskDao} from './model';
+import { response } from 'express';
 
 export class Repository implements Initializer, ReadRepository<Task>, WriteRepository<Task> {
 
-  private connection: Connection;
+  private db: Database;
 
-  private dbClient: Client;
+  private client: Client;
 
   constructor() {
-    this.connection = new Connection();
-    this.dbClient = this.connection.getClient();
+    this.db = new Database();
+    this.client = this.db.getClient();
   }
 
   findOne(id: string): Promise<Task> {
     throw new Error("Method not implemented.");
   }
-  findAll(): Promise<Task[]> {
-    throw new Error("Method not implemented.");
+
+  async findAll(): Promise<Task[]> {
+    const result = await this.client.query(`select ${TaskDao.Fields} from todo.task`);
+
+    return result.rows.map(row => {
+      return TaskDao.map(row)
+    });
+
   }
-  search(item: Task): Promise<Task[]> {
-    throw new Error("Method not implemented.");
-  }
+
   create(item: Task): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
+
   update(id: string, item: Task): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
-  delete(id: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+
+  async delete(id: string): Promise<boolean> {
+    const result = await this.client
+    .query(`update todo.task set ${TaskDao.DeletedAt} = now() where ${TaskDao.Id} = '${id}'`);
+
+    return (result.rowCount != 0);
   }
 
   async init() {
-    await this.connection.init();
+    await this.db.init();
   }
+
+  
 
 }
-
-class Connection implements Initializer {
-  private dbClient: Client;
-
-  constructor() {
-    dotenv.config();
-
-    const { db_todo_connection = 'postgres://postgres:postgres@localhost:5432/postgres' } = process.env;
-
-    this.dbClient = new Client({
-      connectionString: db_todo_connection,
-      ssl: process.env.db_todo_connection ? true : false
-    });
-
-    this.dbClient.on('error', (err: Error) => {
-      logger.info({
-        message: `Postgres client: Unexpected error on idle client`,
-        extra: err,
-      });
-    
-      process.exit(1);
-    });
-
-  }
-
-  public async init() {
-    await this.dbClient.connect();
-    logger.info({
-      message: `Postgres client connected`,
-    });
-  }
-
-  public getClient(): Client {
-    return this.dbClient;
-  }
-
-}
-
-
-/*
-const mapper = (row: QueryResultRow) => {
-  return new Channel(
-    row[ChannelDao.Id],
-    row[ChannelDao.Name],
-    row[ChannelDao.DisplayName],
-    row[ChannelDao.Url],
-    new Date(row[ChannelDao.CreatedAt]),
-    new Date(row[ChannelDao.DeactivatedAt])
-  );
-}
-*/
-
 
 const todoRepository = new Repository();
 export default todoRepository;

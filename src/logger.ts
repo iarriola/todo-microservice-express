@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const log_level = (process.env.LOG_LEVEL) ? process.env.LOG_LEVEL : 'debug';
+const log_level = (process.env.LOG_LEVEL) ? process.env.LOG_LEVEL : 'info';
 
 const logger = winston.createLogger({
   level: log_level,
