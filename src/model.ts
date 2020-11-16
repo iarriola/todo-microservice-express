@@ -5,13 +5,13 @@ export interface Initializer {
 }
 
 export interface WriteRepository<T> {
-  create(item: T): Promise<boolean>;
-  update(id: string, item: T): Promise<boolean>;
+  create(item: T): Promise<T[]>;
+  update(id: string, item: T): Promise<T[]>;
   delete(id: string): Promise<boolean>;
 }
 
 export interface ReadRepository<T> {
-  findOne(id: string): Promise<T>;
+  findOne(id: string): Promise<T[]>;
   findAll(): Promise<T[]>;
 }
 
@@ -20,19 +20,19 @@ export interface SearchRepository<T> {
 }
 
 export class Task {
-  private id: string;
-  private title: string;
-  private description: string;
-  private createdAt: string;
-  private completed: boolean;
-  private deletedAt?: string;
+  public id: string;
+  public title: string;
+  public description: string;
+  public createdAt: string;
+  public completed: boolean;
+  public deletedAt?: string;
 
-  constructor(id: string, title: string, description: string, createdAt: string, completed: boolean, deletedAt?: string) {
+  constructor(id: string, title: string, description: string, completed: boolean, createdAt: string, deletedAt?: string) {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.createdAt = createdAt;
     this.completed = completed;
+    this.createdAt = createdAt;
     this.deletedAt = deletedAt;
   }
 
@@ -43,15 +43,15 @@ export class TaskDao {
   public static Title: string = 'title'
   public static Description: string = 'description';
   public static CreatedAt: string = 'created_at';
-  public static DeletedAt: string = 'deleted_at';
   public static Completed: string = 'completed_at';
+  public static DeletedAt: string = 'deleted_at';
   public static Fields: string =
   `
     ${TaskDao.Id}, 
     ${TaskDao.Title}, 
     ${TaskDao.Description}, 
-    ${TaskDao.CreatedAt}, 
     ${TaskDao.Completed}, 
+    ${TaskDao.CreatedAt}, 
     ${TaskDao.DeletedAt}
   `;
 
@@ -60,8 +60,8 @@ export class TaskDao {
       row[TaskDao.Id],
       row[TaskDao.Title],
       row[TaskDao.Description],
-      new Date(row[TaskDao.CreatedAt]).toISOString(),
       (row[TaskDao.Completed] == null) ? false : true,
+      new Date(row[TaskDao.CreatedAt]).toISOString(),
       (row[TaskDao.DeletedAt]) ? new Date(row[TaskDao.DeletedAt]).toISOString() : undefined
     );
   }

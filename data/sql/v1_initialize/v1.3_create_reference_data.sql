@@ -9,11 +9,10 @@ set row_security = off;
 set search_path = todo;
 
 insert into task (
-    id,
     uuid,
     title,
     description
 )
 values
-    (1,'846cba17-06da-4c63-9d61-23f729f75f13','Shopping list','This is for making the groceries'),
-    (2,'7cb19f48-aa32-4058-b0dd-3a0c69b2d781', 'Home duties', 'Cleaning my room, doing the, etc.');
+    ('846cba17-06da-4c63-9d61-23f729f75f13','Shopping list','This is for making the groceries'),
+    ('7cb19f48-aa32-4058-b0dd-3a0c69b2d781', 'Home duties', 'Cleaning my room, doing the, etc.');

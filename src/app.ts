@@ -4,6 +4,7 @@ import { Express } from 'express-serve-static-core';
 import { logger } from './logger';
 import initializeDependencies from './util/initializer';
 import todoRepository from './repository';
+import bodyParser from 'body-parser';
 
 class App {
   public server: Express;
@@ -19,25 +20,37 @@ class App {
 
   private mountRoutes (): void {
     const router = express.Router();
+    const parser = bodyParser.json();
+    const context = '/api/v1/tasks';
+    
+    this.server.use('/', router);
+    this.server.use(parser);
+
     router.get('/', async (req, res) => {
       res.status(200).send('<h1 style="font-family:sans-serif; text-align:center;">The whole enchilada!</h1>')
     });
-    this.server.use('/', router);
-    /*
-    router.delete('/tasks/:id', async (req, res) => {
-      const a = await del(req.params.id);
-      if (a) {
-        res.send().status(204);
-      } else {
-        res.send().status(404);
-      }
-      
-    });
-    
-    router.get('/tasks', async (req, res) => {
-      const a = await test();
+
+    router.get(`${context}`, async (req, res) => {
+      const a = await todoRepository.findAll();
       res.json(a)
-    });*/
+    });
+
+    router.get(`${context}/:id`, async (req, res) => {
+      const a = await todoRepository.findOne(req.params.id);
+      res.json(a)
+    });
+
+    router.delete(`${context}/:id`, async (req, res) => {
+      const a = await todoRepository.delete(req.params.id);
+      res.status(200).json({
+        message: `Successfully updated resource with id ${req.params.id}`
+      })
+    });
+
+    router.post(`${context}`, parser,  async (req, res) => {
+      const a = await todoRepository.create(req.body);
+      res.status(201).location(`${context}/${a.values().next().value.id}`).send();
+    });
 
   }
 
