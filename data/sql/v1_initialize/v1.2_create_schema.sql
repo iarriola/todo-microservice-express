@@ -25,5 +25,6 @@ create table task (
     title varchar(100) not null,
     description text null,
     created_at timestamptz not null default now(),
+    completed_at timestamptz null default null,
     deleted_at timestamptz null default null
 );
