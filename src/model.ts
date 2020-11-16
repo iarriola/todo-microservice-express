@@ -24,13 +24,15 @@ export class Task {
   private title: string;
   private description: string;
   private createdAt: string;
+  private completed: boolean;
   private deletedAt?: string;
 
-  constructor(id: string, title: string, description: string, createdAt: string, deletedAt?: string) {
+  constructor(id: string, title: string, description: string, createdAt: string, completed: boolean, deletedAt?: string) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.createdAt = createdAt;
+    this.completed = completed;
     this.deletedAt = deletedAt;
   }
 
@@ -42,12 +44,14 @@ export class TaskDao {
   public static Description: string = 'description';
   public static CreatedAt: string = 'created_at';
   public static DeletedAt: string = 'deleted_at';
+  public static Completed: string = 'completed_at';
   public static Fields: string =
   `
     ${TaskDao.Id}, 
     ${TaskDao.Title}, 
     ${TaskDao.Description}, 
     ${TaskDao.CreatedAt}, 
+    ${TaskDao.Completed}, 
     ${TaskDao.DeletedAt}
   `;
 
@@ -57,6 +61,7 @@ export class TaskDao {
       row[TaskDao.Title],
       row[TaskDao.Description],
       new Date(row[TaskDao.CreatedAt]).toISOString(),
+      (row[TaskDao.Completed] == null) ? false : true,
       (row[TaskDao.DeletedAt]) ? new Date(row[TaskDao.DeletedAt]).toISOString() : undefined
     );
   }
