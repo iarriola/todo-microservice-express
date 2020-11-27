@@ -37,13 +37,19 @@ class App {
 
     router.get(`${context}/:id`, async (req, res) => {
       const a = await todoRepository.findOne(req.params.id);
-      res.json(a)
+      if (a.length == 0) {
+        res.status(404).json({
+          message: `Task not found`
+        });
+      } else {
+        res.json(a);
+      }
     });
 
     router.delete(`${context}/:id`, async (req, res) => {
       const a = await todoRepository.delete(req.params.id);
       res.status(200).json({
-        message: `Successfully updated resource with id ${req.params.id}`
+        message: `Successfully deleted task ${req.params.id}`
       })
     });
 
