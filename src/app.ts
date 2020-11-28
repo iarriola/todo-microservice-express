@@ -5,6 +5,7 @@ import { logger } from './logger';
 import initializeDependencies from './util/initializer';
 import todoRepository from './repository';
 import bodyParser from 'body-parser';
+import Cors from 'cors';
 
 class App {
   public server: Express;
@@ -14,8 +15,10 @@ class App {
   constructor () {
     dotenv.config();
     this.server = express();
+    this.server.use(Cors());
     this.mountRoutes();
     this.port = (process.env.PORT) ? +process.env.PORT : 3000;
+
   }
 
   private mountRoutes (): void {
